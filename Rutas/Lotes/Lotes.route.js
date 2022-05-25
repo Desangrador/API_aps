@@ -1,26 +1,27 @@
 const exs = require("express")
 const rtr = exs.Router()
 
-const Lotes = []
+const LotesService = require("../../Servicios/Lotes.service")
+const svc = new LotesService
 
-//Lista de Lotes
 rtr.get('/', (req, res) =>{
   res.send("Ventana de Lotes")
 })
 
+//Lista de Lotes
 rtr.get('/lista', (req, res) =>{
-  res.status(200).json(Lotes)
+  res.status(200).json(svc.Lista())
 })
 
 //Nuevo Lote
 rtr.post('/', (req,res)=>{
   const aux = req.body
+  svc.Nuevo(aux)
 
   res.status(201).json({
-    mensaje: "Lote agregado",
+    mensaje: "Lote añadido",
     datos: aux
   })
-  Lotes.push(aux)
 })
 
 
@@ -29,9 +30,8 @@ rtr.put('/:id', (req,res) =>{
   const { id } = req.params
   const aux = req.body
   res.json({
-    mensaje: "Lote Actualizado",
-    datos: aux,
-    id
+    mensaje: svc.Actualizar(id,aux),
+    datos: aux
   })
 })
 
@@ -40,9 +40,8 @@ rtr.patch('/:id', (req,res) =>{
   const { id } = req.params
   const aux = req.body
   res.json({
-    mensaje: "Lote Actualizado parcialmente",
-    datos: aux,
-    id
+    mensaje: svc.ActualizarParcial(id,aux),
+    datos: aux
   })
 })
 
@@ -50,8 +49,18 @@ rtr.patch('/:id', (req,res) =>{
 rtr.delete('/:id', (req,res) =>{
   const { id } = req.params
   res.json({
-    mensaje: "Lote Borrado",
+    mensaje: svc.Borrar(id),
     id
+  })
+})
+
+//Buscar Lote
+rtr.get('/:id', (req,res)=>{
+  const { id } = req.params
+
+  res.status(200).json({
+    mensaje: svc.Buscarmsj(id),
+    datos: svc.Buscar(id)
   })
 })
 

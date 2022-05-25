@@ -2,8 +2,6 @@ const exs = require("express")
 const rtr = exs.Router()
 
 const productoService = require("../../Servicios/Productos.service")
-
-const Productos = []
 const svc = new productoService
 
 rtr.get('/', (req, res) =>{
@@ -19,6 +17,7 @@ rtr.get('/lista', (req, res) =>{
 rtr.post('/', (req,res)=>{
   const aux = req.body
   svc.Nuevo(aux)
+
   res.status(201).json({
     mensaje: "Producto agregado",
     Datos: aux
@@ -57,11 +56,10 @@ rtr.delete('/:id', (req,res) =>{
 //Buscar Producto
 rtr.get('/:id', (req,res)=>{
   const { id } = req.params
-  const producto = svc.Buscar(id)
 
   res.status(200).json({
     mensaje: svc.Buscarmsj(id),
-    datos: producto
+    datos: svc.Buscar(id)
   })
 })
 
