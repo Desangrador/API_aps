@@ -2,6 +2,8 @@ const exs = require("express")
 const rtr = exs.Router()
 
 const productoService = require("../../Servicios/Productos.service")
+const controlValidarDato = require("../../middleWare/Validar.middleware")
+const {crearProductoEsquema, actProductoEsquema, buscarProductoEsquema } = require("../../Esquemas/producto.schema")
 const svc = new productoService
 
 rtr.get('/', (req, res) =>{
@@ -14,18 +16,21 @@ rtr.get('/lista', (req, res) =>{
 })
 
 //Nuevo Producto
-rtr.post('/', (req,res)=>{
-  const aux = req.body
-  svc.Nuevo(aux)
-
-  res.status(201).json({
-    mensaje: "Producto agregado",
-    Datos: aux
-  })
+rtr.post('/', controlValidarDato(crearProductoEsquema, 'body') ,async(req,res, next)=>{
+  try {
+    const aux = req.body
+    svc.Nuevo(aux)
+    res.status(201).json({
+      mensaje: "Producto agregado",
+      Datos: aux
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 //Actualizar Producto
-rtr.put('/:id', async (req,res,next) =>{
+rtr.put('/:id', controlValidarDato(actProductoEsquema, 'body') , async (req,res,next) =>{
   try {
     const { id } = req.params
     const aux = req.body
@@ -40,7 +45,7 @@ rtr.put('/:id', async (req,res,next) =>{
 })
 
 //Actualización Parcial de Producto
-rtr.patch('/:id', async (req,res,next) =>{
+rtr.patch('/:id', controlValidarDato(actProductoEsquema, 'body') ,async (req,res,next) =>{
   try {
     const { id } = req.params
     const aux = req.body
@@ -56,7 +61,7 @@ rtr.patch('/:id', async (req,res,next) =>{
 })
 
 //Borrar Producto
-rtr.delete('/:id', async(req,res, next) =>{
+rtr.delete('/:id', controlValidarDato(buscarProductoEsquema,'params') , async(req,res,next) =>{
   try {
     const { id } = req.params
     const msj = await svc.Borrar(id)
@@ -70,7 +75,7 @@ rtr.delete('/:id', async(req,res, next) =>{
 })
 
 //Buscar Producto
-rtr.get('/:id', async (req,res,next)=>{
+rtr.get('/:id', controlValidarDato(buscarProductoEsquema, 'params'),async (req,res,next)=>{
   try {
     const { id } = req.params
     const productoBuscado = await svc.Buscar(id)
