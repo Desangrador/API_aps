@@ -25,43 +25,83 @@ rtr.post('/', (req,res)=>{
 })
 
 //Actualizar Producto
-rtr.put('/:id', (req,res) =>{
-  const { id } = req.params
-  const aux = req.body
-  res.json({
-    mensaje: svc.Actualizar(id, aux),
-    datosInsertados: aux
-  })
+rtr.put('/:id', async (req,res,next) =>{
+  try {
+    const { id } = req.params
+    const aux = req.body
+    const msj = await svc.Actualizar(id, aux)
+    res.json({
+      Mensaje: msj,
+      datosInsertados: aux
+    })
+  }catch (error) {
+    next(error)
+  }
 })
 
 //Actualización Parcial de Producto
-rtr.patch('/:id', (req,res) =>{
-  const { id } = req.params
-  const aux = req.body
-  res.json({
-    mensaje: svc.ActualizarParcial(id, aux),
-    datosInsertados: aux
-  })
+rtr.patch('/:id', async (req,res,next) =>{
+  try {
+    const { id } = req.params
+    const aux = req.body
+    const msj = await svc.ActualizarParcial(id, aux)
+    res.json({
+      mensaje: msj,
+      datosInsertados: aux
+    })
+  } catch (error) {
+    next(error)
+  }
+
 })
 
 //Borrar Producto
-rtr.delete('/:id', (req,res) =>{
-  const { id } = req.params
+rtr.delete('/:id', async(req,res, next) =>{
+  try {
+    const { id } = req.params
+    const msj = await svc.Borrar(id)
+    res.json({
+      mensaje: msj
+    })
+  } catch (error) {
+    next(error)
+  }
 
-  res.json({
-    mensaje: svc.Borrar(id),
-  })
 })
 
 //Buscar Producto
-rtr.get('/:id', (req,res)=>{
-  const { id } = req.params
-
-  res.status(200).json({
-    mensaje: svc.Buscarmsj(id),
-    datos: svc.Buscar(id)
-  })
+rtr.get('/:id', async (req,res,next)=>{
+  try {
+    const { id } = req.params
+    const productoBuscado = await svc.Buscar(id)
+    res.status(200).json({
+      mensaje: "Operación Finalizada; Producto Encontrado",
+      datos: productoBuscado
+    })
+  } catch (error) {
+    next(error)
+  }
 })
+
+// Pruebas
+rtr.copy('/:id', async(req,res,next)=>{
+  try {
+    const { id } = req.params
+    const msj = await svc.prueba(id)
+    res.status(200).json(msj)
+  }catch (error) {
+    // res.status(404).json({
+    //   mensaje: error.message
+    // })
+    next(error)
+  }
+})
+
+// rtr.copy('/:id', (req,res,next)=>{
+//   const { id } = req.params
+//   const msj = svc.prueba2(id)
+// })
+
 
 //Exports
 module.exports = rtr;

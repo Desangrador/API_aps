@@ -1,3 +1,4 @@
+const vum = require("@hapi/boom")
 class ProductosService{
   Productos = []
 
@@ -21,20 +22,19 @@ class ProductosService{
   }
 
   //Actualizar Producto
-  Actualizar(index, aux){
+  async Actualizar(index, aux){
     let repetir = true
     let i = 0
-    let msj = ""
 
     if (this.Productos.length <= 0){
-      msj = "La tabla de Productos está vacía"
+      throw vum.rangeNotSatisfiable("La tabla de Productos está vacía")
     }else if (index <= 0 || index > this.Productos[this.Productos.length-1].id){
-      msj = "Error, ID no válida"
+      throw vum.badData("ID no válida")
     }else{
       while (repetir){
         if (i == this.Productos.length){
-        msj = "El producto no se ha encontrado"
-        repetir = false
+          repetir = false
+          throw vum.notFound("El producto no se ha encontrado")
         }else{
           if (index == this.Productos[i].id){
 
@@ -48,30 +48,28 @@ class ProductosService{
               this.Productos[i].precio = aux.precio
             }
 
-          msj = "Producto Actualizado"
           repetir = false
           }
           i++
         }
       }
     }
-    return msj
+    return "Operación Finalizada; Producto Actualizado"
   }
 
   //Actualización Parcial de Producto
-  ActualizarParcial(index, aux){
+  async ActualizarParcial(index, aux){
     let repetir = true
     let i = 0
-    let msj = ""
 
     if (this.Productos.length <= 0){
-      msj = "La tabla de Productos está vacía"
+      throw vum.rangeNotSatisfiable("La tabla de Productos está vacía")
     }else if (index <= 0 || index > this.Productos[this.Productos.length-1].id){
-      msj = "Error, ID no válida"
+      throw vum.badData("ID no válida")
     }else{
       while (repetir){
         if (i == this.Productos.length){
-        msj = "El producto no se ha encontrado"
+          throw vum.notFound("El producto no se ha encontrado")
         repetir = false
         }else{
           if (index == this.Productos[i].id){
@@ -86,49 +84,71 @@ class ProductosService{
               this.Productos[i].precio = aux.precio
             }
 
-          msj = "Producto Actualizado Parcialmente"
           repetir = false
           }
           i++
         }
       }
     }
-    return msj
+    return "Operación Finalizada; Producto Actualizado parcialmente"
   }
 
   //Borrar Producto
-  Borrar(index){
-    let msj = ""
-    if (index <= 0 || index > this.Productos.length){
-      msj = "Error, ID no válida/encontrada"
+  async Borrar(index){
+
+    if (this.Productos.length <= 0){
+      throw vum.rangeNotSatisfiable("La tabla de Productos está vacía")
+    }else if (index <= 0 || index > this.Productos[this.Productos.length-1].id){
+      throw vum.badData("ID no válida")
     }else{
-      this.Productos.splice(index-1,1)
-      msj = "Producto borrado"
-    }
-    return msj
+
+      let repetir = true
+      let i = 0
+
+      while (repetir){
+        if (i == this.Productos.length){
+          throw vum.notFound("El producto no se ha encontrado")
+          repetir = false
+        }else{
+          if (index == this.Productos[i].id){
+            this.Productos.splice(i,1)
+            repetir = false
+          }
+          i++;
+        }
+      }
+    }return "Operación Finalizada; Producto "+index+" Borrado"
   }
 
   //BuscarProducto
-  Buscarmsj(index){
-    let msj = ""
-    if (this.Productos.length <= 0){
-      msj = "La tabla de Productos está vacía"
-    }else if (index <= 0 || index > this.Productos[this.Productos.length-1].id){
-      msj = "Error, ID no válida"
-    }else{
-      msj = "Producto Encontrado"
-    }
-    return msj
-  }
-  Buscar(id){
+  async Buscar(id){
     const index = Number(id)
     const producto = this.Productos.find(item => item.id === index)
-    if (producto == undefined){
-      return "vacio"
+
+    if (this.Productos.length <= 0){
+      throw vum.rangeNotSatisfiable("La tabla de Productos está vacía")
+    }else if (index <= 0 || index > this.Productos[this.Productos.length-1].id){
+      throw vum.badData("ID no válida")
+    }else if (producto == undefined){
+      throw vum.notFound("El producto no se ha encontrado")
     }else{
       return producto
     }
   }
-}
 
+  //Pruebas
+  async prueba(id){
+    const msj = "prueba"
+    if (id === '1'){
+      throw new Error('Mensaje de error')
+    }
+    return msj
+  }
+
+  // prueba2(id){
+  //   const msj = "prueba 2"
+  //   const errorcito = this.errorAuto()
+  //   return msj
+  // }
+}
 module.exports = ProductosService

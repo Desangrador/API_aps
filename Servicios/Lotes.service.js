@@ -1,3 +1,5 @@
+const bum = require("@hapi/boom")
+
 class LotesService{
   Lotes = []
 
@@ -21,51 +23,48 @@ class LotesService{
   }
 
   //Actualizar Lote
-  Actualizar(index, aux){
+  async Actualizar(index, aux){
     let repetir = true
     let i = 0
-    let msj = ""
 
     if (this.Lotes.length <= 0){
-      msj = "La tabla de Lotes está vacía"
+      throw bum.rangeNotSatisfiable("La tabla de Lotes está vacía")
     }else if (index <= 0 || index > this.Lotes[this.Lotes.length-1].id){
-      msj = "Error, ID no válida"
+      throw bum.badData("ID no válida")
     }else{
       while (repetir){
         if (i == this.Lotes.length){
-        msj = "El Lote no se ha encontrado"
         repetir = false
+        throw bum.notFound("El lote no se ha encontrado")
         }else{
           if (index == this.Lotes[i].id){
             this.Lotes[i].cantidadDisponible = aux.cantidadDisponible
             this.Lotes[i].fechaVencimientoProducto = aux.fechaVencimientoProducto
             this.Lotes[i].contieneProducto = aux.contieneProducto
 
-            msj = "Lote Actualizado"
             repetir = false
           }
           i++
         }
       }
     }
-    return msj
+    return "Operación Finalizada; Lote Actualizado"
   }
 
   //Actualización Parcial de Producto
-  ActualizarParcial(index, aux){
+  async ActualizarParcial(index, aux){
     let repetir = true
     let i = 0
-    let msj = ""
 
     if (this.Lotes.length <= 0){
-      msj = "La tabla de Lotes está vacía"
+      throw bum.rangeNotSatisfiable("La tabla de Lotes está vacía")
     }else if (index <= 0 || index > this.Lotes[this.Lotes.length-1].id){
-      msj = "Error, ID no válida"
+      throw bum.badData("ID no válida")
     }else{
       while (repetir){
         if (i == this.Lotes.length){
-        msj = "El Lote no se ha encontrado"
-        repetir = false
+          repetir = false
+          throw bum.notFound("El lote no se ha encontrado")
         }else{
           if (index == this.Lotes[i].id){
             if (aux.cantidadDisponible != undefined){
@@ -76,45 +75,52 @@ class LotesService{
               this.Lotes[i].contieneProducto = aux.contieneProducto
             }
 
-            msj = "Lote Actualizado"
             repetir = false
           }
           i++
         }
       }
     }
-    return msj
+    return "Operación Finalizada; Lote Actualizado parcialmente"
   }
 
   //Borrar Lote
-  Borrar(index){
-    let msj = ""
-    if (index <= 0 || index > this.Lotes.length){
-      msj = "Error, ID no válida/encontrada"
+  async Borrar(index){
+    if (this.Lotes.length <= 0){
+      throw bum.rangeNotSatisfiable("La tabla de Lotes está vacía")
+    }else if (index <= 0 || index > this.Lotes[this.Lotes.length-1].id){
+      throw bum.badData("ID no válida")
     }else{
-      this.Lotes.splice(index-1,1)
-      msj = "Lote borrado"
-    }
-    return msj
+
+      let repetir = true
+      let i = 0
+
+      while (repetir){
+        if (i == this.Lotes.length){
+          throw bum.notFound("El producto no se ha encontrado")
+          repetir = false
+        }else{
+          if (index == this.Lotes[i].id){
+            this.Lotes.splice(i,1)
+            repetir = false
+          }
+          i++;
+        }
+      }
+    }return "Operación Finalizada; Lote"+index+"Borrado"
   }
 
   //Buscar Lote
-  Buscarmsj(index){
-    let msj = ""
-    if (this.Lotes.length <= 0){
-      msj = "La tabla de Lotes está vacía"
-    }else if (index <= 0 || index > this.Lotes[this.Lotes.length-1].id){
-      msj = "Error, ID no válida"
-    }else{
-      msj = "Lote Encontrado"
-    }
-    return msj
-  }
-  Buscar(id){
+  async Buscar(id){
     const index = Number(id)
     const lote = this.Lotes.find(item => item.id === index)
-    if (lote == undefined){
-      return "vacio"
+
+    if (this.Lotes.length <= 0){
+      throw bum.rangeNotSatisfiable("La tabla de lote está vacía")
+    }else if (index <= 0 || index > this.Lotes[this.Lotes.length-1].id){
+      throw bum.badData("ID no válida")
+    }else if (lote == undefined){
+      throw bum.notFound("El lote no se ha encontrado")
     }else{
       return lote
     }

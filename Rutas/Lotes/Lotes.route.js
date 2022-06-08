@@ -26,43 +26,64 @@ rtr.post('/', (req,res)=>{
 
 
 //Actualizar Lote
-rtr.put('/:id', (req,res) =>{
-  const { id } = req.params
-  const aux = req.body
-  res.json({
-    mensaje: svc.Actualizar(id,aux),
-    datos: aux
-  })
+rtr.put('/:id', async(req,res,next) =>{
+  try {
+    const { id } = req.params
+    const aux = req.body
+    const msj = await svc.Actualizar(id,aux)
+    res.json({
+      mensaje: msj,
+      datos: aux
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 //Actualización Parcial de un Lote
-rtr.patch('/:id', (req,res) =>{
-  const { id } = req.params
-  const aux = req.body
-  res.json({
-    mensaje: svc.ActualizarParcial(id,aux),
-    datos: aux
-  })
+rtr.patch('/:id', async (req,res,next) =>{
+  try {
+    const { id } = req.params
+    const aux = req.body
+    const msj = await svc.ActualizarParcial(id,aux)
+    res.json({
+      mensaje: msj,
+      datos: aux
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 //Borrar Lote
-rtr.delete('/:id', (req,res) =>{
-  const { id } = req.params
-  res.json({
-    mensaje: svc.Borrar(id),
-    id
-  })
+rtr.delete('/:id', async (req,res,next) =>{
+  try {
+    const { id } = req.params
+    const msj = await svc.Borrar(id)
+    res.json({
+      mensaje: msj
+    })
+  } catch (error) {
+    next(error)
+  }
+
 })
 
 //Buscar Lote
-rtr.get('/:id', (req,res)=>{
-  const { id } = req.params
-
-  res.status(200).json({
-    mensaje: svc.Buscarmsj(id),
-    datos: svc.Buscar(id)
-  })
+rtr.get('/:id', async (req,res,next)=>{
+  try {
+    const { id } = req.params
+    const loteBuscado = await svc.Buscar(id)
+    res.status(200).json({
+      mensaje: "Operación Finalizada; Lote Encontrado",
+      datos: loteBuscado
+    })
+  } catch (error) {
+    next(error)
+  }
 })
+
+
 
 //Exports
 module.exports = rtr;
