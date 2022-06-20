@@ -11,19 +11,17 @@ rtr.get('/', (req, res) =>{
 })
 
 //Lista de Productos
-rtr.get('/lista', (req, res) =>{
-  res.status(200).json(svc.Lista())
+rtr.get('/lista', async (req, res) =>{
+  const productos = await svc.Lista()
+  res.json(productos)
 })
 
 //Nuevo Producto
 rtr.post('/', controlValidarDato(crearProductoEsquema, 'body') ,async(req,res, next)=>{
   try {
     const aux = req.body
-    svc.Nuevo(aux)
-    res.status(201).json({
-      mensaje: "Producto agregado",
-      Datos: aux
-    })
+    const Prod = await svc.Nuevo(aux)
+    res.status(201).json(Prod)
   } catch (error) {
     next(error)
   }
