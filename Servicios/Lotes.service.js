@@ -22,7 +22,7 @@ class LotesService{
       this.id = 1
     }
 
-    const producto = await models.producto.findByPk(aux.id)
+    const producto = await models.producto.findByPk(aux.productoId)
     if (producto == null){
       throw bum.failedDependency("No se encontró dicho producto")
     }

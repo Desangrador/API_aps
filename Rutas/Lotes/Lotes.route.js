@@ -12,7 +12,8 @@ rtr.get('/', (req, res) =>{
 
 //Lista de Lotes
 rtr.get('/lista', async (req, res) =>{
-  res.status(200).json(svc.Lista())
+  const lotes = await svc.Lista()
+  res.status(201).json(lotes)
 })
 
 //Nuevo Lote

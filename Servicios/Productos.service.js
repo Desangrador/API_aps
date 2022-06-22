@@ -58,6 +58,16 @@ class ProductosService{
 
   //Borrar Producto
   async Borrar(index){
+    for (let i = 0; i < (await models.lote.findAll()).length; i++){
+      let tablaLotes = await models.lote.findAll()
+      let loteborrar = tablaLotes[i]
+      console.log(loteborrar)
+      if (loteborrar != null){
+        if (await loteborrar.productoId == index){
+          loteborrar.destroy()
+        }
+      }
+    }
     const borrar = await models.producto.findByPk(index)
     if (borrar == null){
       throw vum.notFound("Producto no encontrado")

@@ -13,7 +13,7 @@ rtr.get('/', (req, res) =>{
 //Lista de Productos
 rtr.get('/lista', async (req, res) =>{
   const productos = await svc.Lista()
-  res.json(productos)
+  res.status(201).json(productos)
 })
 
 //Nuevo Producto
