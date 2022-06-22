@@ -27,8 +27,10 @@ const productoSchema = {
 }
 
 class Producto extends Model{
-  static associate(){
-
+  static associate(models){
+    this.hasMany(models.lote, {
+      foreignKey: 'productoId'
+    })
   }
 
   static config(sequelize){

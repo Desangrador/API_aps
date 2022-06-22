@@ -32,6 +32,9 @@ class Lote extends Model{
     this.belongsTo(models.producto, {
       as: 'producto'
     })
+    this.hasMany(models.detalleatencion, {
+      foreignKey: 'loteId'
+    })
   }
 
   static config(sequelize){

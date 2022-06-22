@@ -1,4 +1,5 @@
 const exs = require("express");
+const cors = require("cors")
 const routes = require('./Rutas')
 const { manejarError, mostrarError, boomError } = require("./middleWare/Error.middleware")
 
@@ -7,6 +8,7 @@ const apk = exs();
 const puerto = 3500;
 
 apk.use(exs.json());
+apk.use(cors())
 
 routes(apk);
 

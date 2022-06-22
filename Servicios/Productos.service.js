@@ -1,70 +1,81 @@
 const vum = require("@hapi/boom")
 
-const getConnection = require("../libs/postgres")
-const piscina = require("../libs/postgres.pool")
-const secuela2 = require("../libs/sequelize")
+const { models } = require("../libs/sequelize")
 
 class ProductosService{
-  Productos = []
   id = 0
-  constructor(){
-    this.Productos = []
-    this.piscina = piscina
-    this.piscina.on('error', (err) => console.log(err))
 
+  constructor(){
   }
+
   //Lista de Productos
   async Lista(){
-    // postgres
-    // const cliente = await getConnection()
-    // const salida = await cliente.query('select * from producto')
-    // return salida.rows
-
-    // postgres pool
-    const consulta = "select * from productos"
-    const [ data ] = await secuela2.query(consulta)
-    return data
+    const datos = await models.producto.findAll()
+    return datos
   }
 
   //Nuevo Producto
   async Nuevo(aux){
+    const id2 = (await models.producto.findAll()).length
+    const ultimo = await models.producto.findByPk(id2)
+    if (id2 != 0){
+      this.id = ultimo.id + 1;
+    }else{
+      this.id = 1
+    }
     const NProd = {
-      id: this.id + 1,
+      id: this.id,
       ...aux
     }
-    const { id, codigo, nombre, detalles, precio } = NProd
 
-    const cliente = await getConnection()
-    await cliente.query("insert into producto values ("+ id +", '"+ codigo +"', '"+ nombre +"', '"+ detalles +"', '"+ precio +"')")
-    return NProd
+    const salida = await models.producto.create(NProd)
+    return salida
   }
 
   //Actualizar Producto
   async Actualizar(index, aux){
+    const actualizar = await models.producto.findByPk(index)
+    if (actualizar == null){
+      throw vum.notFound("Producto no encontrado")
+    }
+    await actualizar.set(aux)
+    await actualizar.save()
 
-    return "Operación Finalizada; Producto Actualizado"
+    return "Operación Finalizada; Producto "+index+" Actualizado"
   }
 
   //Actualización Parcial de Producto
   async ActualizarParcial(index, aux){
+    const actualizar = await models.producto.findByPk(index)
+    if (actualizar == null){
+      throw vum.notFound("Producto no encontrado")
+    }
+    await actualizar.set(aux)
+    await actualizar.save()
 
-    return "Operación Finalizada; Producto Actualizado parcialmente"
+    return "Operación Finalizada; Producto "+index+" Actualizado parcialmente"
   }
 
   //Borrar Producto
   async Borrar(index){
-
-    return "Operación Finalizada; Producto "+index+" Borrado"
+    const borrar = await models.producto.findByPk(index)
+    if (borrar == null){
+      throw vum.notFound("Producto no encontrado")
+    }else{
+      await borrar.destroy()
+    }
+    return "Operación Finalizada, Producto "+index+" borrado"
   }
 
   //BuscarProducto
   async Buscar(id){
-
+    const buscado = await models.producto.findByPk(id)
+    if (buscado == null){
+      throw vum.notFound("Producto no encontrado")
+    }
+    return buscado.id
   }
 
-  //Pruebas
-  async prueba(id){
-  }
 }
 
 module.exports = ProductosService

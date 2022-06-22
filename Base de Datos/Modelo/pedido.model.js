@@ -28,6 +28,15 @@ const pedidoSchema = {
     allowNull: true,
     type: DataTypes.STRING
   },
+  facturaId: {
+    allowNull: false,
+    unique: true,
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'facturas'
+    },
+    field: 'perteneceFactura'
+  },
   clienteId: {
     allowNull: false,
     type: DataTypes.INTEGER,
@@ -40,8 +49,14 @@ const pedidoSchema = {
 
 class Pedido extends Model{
   static associate(models){
+    this.belongsTo(models.factura, {
+      as: 'factura'
+    })
     this.belongsTo(models.cliente, {
       as: 'cliente'
+    })
+    this.hasMany(models.detallepedido, {
+      foreignKey: 'pedidoId'
     })
   }
 

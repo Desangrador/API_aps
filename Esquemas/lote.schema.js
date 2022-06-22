@@ -3,22 +3,22 @@ const enjoi = require('joi')
 //ID
 const id = enjoi.number().integer();
 //Cantidad Disponible
-const cantidadDisponible = enjoi.number().min(1).integer()
+const cantidad = enjoi.number().min(1).integer()
 //fecha de Vencimiento del Producto
-const fechaVencimientoProducto = enjoi.date().min('now')
+const fechaVenc = enjoi.date().min('now')
 //contiene un Producto
-const contieneProducto = enjoi.number().integer().min(1)
+const productoId = enjoi.number().integer().min(1)
 
 const crearLoteEsquema = enjoi.object({
-  cantidadDisponible: cantidadDisponible.required(),
-  fechaVencimientoProducto: fechaVencimientoProducto.required(),
-  contieneProducto: contieneProducto.required()
+  cantidad: cantidad.required(),
+  fechaVenc: fechaVenc.required(),
+  productoId: productoId.required()
 })
 
 const actLoteEsquema = enjoi.object({
-  cantidadDisponible,
-  fechaVencimientoProducto,
-  contieneProducto
+  cantidad,
+  fechaVenc,
+  productoId
 })
 
 const buscarLoteEsquema = enjoi.object({

@@ -54,7 +54,7 @@ class Factura extends Model{
     return{
       sequelize,
       tableName: TB_FACTURA,
-      modelName: 'md_factura',
+      modelName: 'factura',
       timestamps: false
     }
   }

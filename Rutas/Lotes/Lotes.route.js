@@ -11,7 +11,7 @@ rtr.get('/', (req, res) =>{
 })
 
 //Lista de Lotes
-rtr.get('/lista', (req, res) =>{
+rtr.get('/lista', async (req, res) =>{
   res.status(200).json(svc.Lista())
 })
 
@@ -20,15 +20,11 @@ rtr.post('/', controlValidarDato(crearLoteEsquema, 'body') , async (req,res,next
   //fecha es mm/dd/aaaa
   try {
     const aux = req.body
-    svc.Nuevo(aux)
-    res.status(201).json({
-      mensaje: "Lote añadido",
-      datos: aux
-    })
+    const lote = await svc.Nuevo(aux)
+    res.status(201).json(lote)
   } catch (error) {
     next(error)
   }
-
 })
 
 

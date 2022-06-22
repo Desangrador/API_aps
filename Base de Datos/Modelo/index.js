@@ -21,6 +21,8 @@ function setupModels(sequelize){
   DetallePedido.associate(sequelize.models)
   Factura.associate(sequelize.models)
   Pedido.associate(sequelize.models)
+  Producto.associate(sequelize.models)
+  Cliente.associate(sequelize.models)
 }
 
 module.exports = { setupModels }

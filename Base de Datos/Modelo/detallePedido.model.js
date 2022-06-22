@@ -30,6 +30,9 @@ class DetallePedido extends Model{
     this.belongsTo(models.pedido, {
       as: 'pedido'
     })
+    this.hasMany(models.detalleatencion, {
+      foreignKey: 'detallepedidoId'
+    })
   }
 
   static config(sequelize){
